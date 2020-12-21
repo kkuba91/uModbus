@@ -5,8 +5,8 @@ The standart implemented with model from: https://www.simplymodbus.ca/ (website 
 
 Tested in about 30% with Modbus Slave from: https://www.modbustools.com/ (tool and website content Copyright © 2020 Witte Software).  
 
-Modbus TCP standard is easy, in some commisionings still in use by many measurement devices (but not only - control devices also!).
-That is why it is good to know rules of this standard.
+Modbus TCP standard is easy, in some commisionings still in use by many measurement devices (but not only - control devices also).
+That is why it is good to know rules. Dependent on application there are some related kinds of the standard: ModbusTCP, ModbusRTU, ModbusRTU over TCP, Modbus ASCII; This class was mainly related with the first one (most pompular use).
 
 ## Scope:
 Class object what could be parametrized as Slave or Master
