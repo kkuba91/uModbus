@@ -25,6 +25,7 @@ class uModBus:
         self.TCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.TCP_IP = ip
 
+    # Connect function with socker reinit for ModbusTCP port
     def TCPconnect(self):
         self.TCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.TCP.connect((self.TCP_IP, 502))
@@ -68,8 +69,8 @@ class uModBus:
             dataToServer = self.requestRead(self.TCP_request, False)
             dataToServer.pop()
             dataToServer.pop()
-            print("Significant packets sent:")
-            print(dataToServer)
+            # print("Significant packets sent:")
+            # print(dataToServer)
             self.TCP_length = len(dataToServer)
             self.TCP_msg.extend(self.TCP_tx.to_bytes(2, byteorder='big'))
             self.TCP_msg.extend([0x00, 0x00])
@@ -98,8 +99,8 @@ class uModBus:
         try:
             self.TCP_msg.extend(data)
             self.TCP.send(bytearray(self.TCP_msg))
-            print("All packets sent:")
-            print(self.TCP_msg)
+            # print("All packets sent:")
+            # print(self.TCP_msg)
         except BaseException as e:
             # self.TCP.connect((self.TCP_IP, 502))
             print(e)
@@ -156,9 +157,8 @@ class uModBus:
         msg.extend([tempBytes[0], tempBytes[1]])
         return bytearray(self.crcMB(msg))
 
-
-
-
+    # Read ModbusTCP message without prefix
+    # Returning answer message
     def requestRead(self, data, checkCRC):
         okToRead = False
         quantity = 0
@@ -202,6 +202,7 @@ class uModBus:
                 return self.WriteRegister(offset-1, val)
         else:
             return -1
+
     # Warning this was the simplest/worst way to send boolean data represented by whole 16bit registers
     # In fact of Modbus standard, was not used in library anymore
     # this includes Input() and Output() functions
@@ -241,12 +242,14 @@ class uModBus:
             q=q-1
         return int(data[::-1], 2)
 
+    # Return register
     def Register(self, i):
         if self.Registers[i] >= 0 and self.Registers[i] <= 65535:
             return self.Registers[i].to_bytes(2, byteorder='big', signed=False)
         else:
             return self.Registers[i].to_bytes(2, byteorder='big', signed=True)
 
+    # Return Input Register
     def InputRegister(self, i):
         if self.InputRegisters[i] >= 0 and self.InputRegisters[i] <= 65535:
             return self.InputRegisters[i].to_bytes(2, byteorder='big', signed=False)
