@@ -19,6 +19,7 @@ Minor points:
 ## Testing:
 Now prepared ModbusTCP tests with synchronous usage of TCP read/write socket usage.
 
+
 ## Example of use as Master
 Send request TCP messages for information from slave devices. This is TCP client script.
 
@@ -27,12 +28,12 @@ The begining:
 # Object uModbus Create/Put address ID/IPv4 address:
 mb1 = uModBus()
 mb1.UnitID = 21
-mb1.TCPinit("127.0.0.1")
+mb1.TCPinit("127.0.0.1")  # test on local
 ```
 
 Now build a request - Function 3 - Read 6 Holding Registers starting with address "0":
 ```python
-reqF03 = mb1.requestBuild(UnitID=21, Function=3, Offset=0, Quantity=6)
+reqF03 = mb1.requestBuild(UnitID=22, Function=3, Offset=0, Quantity=6)
 ```
 
 Then use reqest in an action (now TCP is the only way) - send and wait for response:
@@ -47,3 +48,28 @@ In reality slaves uses predefined addressed registers/inputs/outputs, so further
 
 ## Example of use as Slave
 Await for incoming TCP request messages and answer when ID address and crc fits.
+
+The begining quite the same as in previous example:
+```python
+# Object uModbus Create/Put address ID/IPv4 address:
+mb2 = uModBus()
+mb2.UnitID = 22
+mb2.TCPinit("127.0.0.1")  # test on local
+```
+
+Type as Slave and Wait for first connection:
+```python
+mb2.TCPslave()
+mb2.TCPslaveAccept()
+```
+
+Wait for incoming message and answer to the Master (synchronous example in loop):
+```python
+while True:
+    status = mb2.TCPslaveRead()
+    if not status:
+        mb2.TCPslaveResponse()
+```
+
+For the Slave device data should be parser automatically in case of writing function usage.
+
