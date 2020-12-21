@@ -74,5 +74,5 @@ while True:
         mb2.TCPslaveResponse()
 ```
 
-For the Slave device data should be parser automatically in case of writing function usage.
+For the Slave device data should be parsed automatically in case of writing function usage by Master.
 
