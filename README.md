@@ -2,6 +2,7 @@
 Micro Modbus class for workshop experiments - free, unfortunately bugged :) and also in continuation
 
 The standart implemented with model from: https://www.simplymodbus.ca/ (website and content Copyright © 2020 Simply Modbus).
+
 Tested in about 30% with Modbus Slave from: https://www.modbustools.com/ (tool and website content Copyright © 2020 Witte Software).  
 
 Modbus TCP standard is easy, in some commisionings still in use by many measurement devices (but not only - control devices also!).
