@@ -1,3 +1,6 @@
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/kkuba91/uModbus/LICENSE)
+[![Language: Python](https://img.shields.io/badge/python-%3E%3D3.7-blue)](https://github.com/kkuba91/uModbus)
+
 # uModbus
 Micro Modbus class for workshop experiments - free, unfortunately bugged :) and also in continuation
 
