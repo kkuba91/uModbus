@@ -2,7 +2,7 @@
 [![Language: Python](https://img.shields.io/badge/python-%3E%3D3.7-blue)](https://github.com/kkuba91/uModbus)
 
 # uModbus
-#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) and also in continuation
+#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) and also in development.
 
 ##### The standart implemented with model from: https://www.simplymodbus.ca/  (website and content Copyright © 2020 Simply Modbus).
 
@@ -27,8 +27,7 @@ Class object what could be parametrized as Slave or Master.
  - class should have Slave xor Master features be flexible in that way (soon)
  
 ## Testing:
-Now prepared ModbusTCP tests with synchronous usage of TCP read/write socket usage.
-
+Now prepared ModbusTCP tests with synchronous requests of TCP read/write at ethernet socket.
 
 ## Example of use as Master
 Send request TCP messages for information from slave devices. This is TCP client script.
