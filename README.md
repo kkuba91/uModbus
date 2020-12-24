@@ -14,10 +14,14 @@ That is why it is good to know rules.
 Dependent on application there are some related kinds of the standard: ModbusTCP, ModbusRTU, ModbusRTU over TCP, Modbus ASCII; This class was mainly related with the first one (most pompular usage).
 
 ## Scope:
-Class object what could be parametrized as Slave or Master
-Main point - bridge between TCP/serial (Modbus) and data on PC oriented as object (message frames as lists in general on python side)
+Class object what could be parametrized as Slave or Master.
 
-Minor points:
+#### Main point:
+
+- bridge between TCP/serial (Modbus) and data on PC oriented as object (message frames as lists in general on python side)
+
+#### Minor points:
+
  - learn Modbus TCP standard (RTU comming soon)
  - prepare some easy tool for further testing (future target)
  - class should have Slave xor Master features be flexible in that way (soon)
