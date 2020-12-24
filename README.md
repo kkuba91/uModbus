@@ -2,16 +2,18 @@
 [![Language: Python](https://img.shields.io/badge/python-%3E%3D3.7-blue)](https://github.com/kkuba91/uModbus)
 
 # uModbus
-Micro Modbus class for workshop experiments - free, unfortunately bugged :) and also in continuation
+#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) and also in continuation
 
-The standart implemented with model from: https://www.simplymodbus.ca/ (website and content Copyright © 2020 Simply Modbus).
+##### The standart implemented with model from: https://www.simplymodbus.ca/ 
+##### (website and content Copyright © 2020 Simply Modbus).
 
-Tested in about 30% with Modbus Slave from: https://www.modbustools.com/ (tool and website content Copyright © 2020 Witte Software).  
+##### Tested in about 30% with Modbus Slave from: https://www.modbustools.com/ 
+##### (tool and website content Copyright © 2020 Witte Software).  
 
-Modbus TCP standard is easy, in some commisionings still in use by many measurement devices (but not only - control devices also).
+Modbus TCP standard is relatively easy. In some commisionings still in use by many measurement devices (but not only - control devices uses it too).
 That is why it is good to know rules. 
 
-Dependent on application there are some related kinds of the standard: ModbusTCP, ModbusRTU, ModbusRTU over TCP, Modbus ASCII; This class was mainly related with the first one (most pompular use).
+Dependent on application there are some related kinds of the standard: ModbusTCP, ModbusRTU, ModbusRTU over TCP, Modbus ASCII; This class was mainly related with the first one (most pompular usage).
 
 ## Scope:
 Class object what could be parametrized as Slave or Master
