@@ -2,7 +2,7 @@
 [![Language: Python](https://img.shields.io/badge/python-%3E%3D3.7-blue)](https://github.com/kkuba91/uModbus)
 
 # uModbus
-#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) and also in development.
+#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) but in development.
 
 ##### The standart implemented with model from: https://www.simplymodbus.ca/  (website and content Copyright © 2020 Simply Modbus).
 
@@ -18,7 +18,7 @@ Class object what could be parametrized as Slave or Master.
 
 #### Main point:
 
-- bridge between TCP/serial (Modbus) and data on PC oriented as object (message frames as lists in general on python side)
+- bridge between Modbus (TCP/serial) and data oriented objects on PC (in general, the lists, in python script)
 
 #### Minor points:
 
@@ -34,7 +34,7 @@ Send request TCP messages for information from slave devices. This is TCP client
 
 The begining:
 ```python
-# Object uModbus Create/Put address ID/IPv4 address:
+# Object uModbus Create/Put ID/IPv4 address:
 mb1 = uModBus()
 mb1.UnitID = 21
 mb1.TCPinit("127.0.0.1")  # test on local
@@ -52,7 +52,7 @@ FromServer_reqF01 = mb1.TCPread()
 ```
 
 At the end Master needs to parse data into further program resources.
-In reality slaves uses predefined addressed registers/inputs/outputs, so further answer parsers will come here soon (under construction).
+In reality slaves uses predefined addressed registers/inputs/outputs, so further answer parsers will come here (soon).
 
 
 ## Example of use as Slave
@@ -60,7 +60,7 @@ Await for incoming TCP request messages and answer when ID address and crc fits.
 
 The begining quite the same as in previous example:
 ```python
-# Object uModbus Create/Put address ID/IPv4 address:
+# Object uModbus Create/Put ID/IPv4 address:
 mb2 = uModBus()
 mb2.UnitID = 22
 mb2.TCPinit("127.0.0.1")  # test on local
@@ -80,5 +80,5 @@ while True:
         mb2.TCPslaveResponse()
 ```
 
-For the Slave device data should be parsed automatically in case of writing function usage by Master.
+For the Slave device data should be parsed automatically in case of use writing function by Master.
 
