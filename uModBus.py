@@ -1,6 +1,35 @@
+#!/usr/bin/env python3
+
 import socket
 import math
 
+## Description:
+help = "\nExample of use as Master:\n" \
+       "mb1 = uModBus()\n" \
+       "mb1.UnitID = 21\n" \
+       "mb1.TCPinit(127.0.0.1)  # test on local\n" \
+       "\n" \
+       "Now build a request - Function 3 - Read 6 Holding Registers starting with address 0:\n" \
+       "reqF03 = mb1.requestBuild(UnitID=22, Function=3, Offset=0, Quantity=6)\n" \
+       "Then use reqest in an action (now TCP is the only way) - send and wait for response:\n" \
+       "mb1.TCPsend(reqF01)\n" \
+       "FromServer_reqF01 = mb1.TCPread()\n" \
+       "\n" \
+       "Example of use as Slave:\n" \
+       "mb2 = uModBus()\n" \
+       "mb2.UnitID = 22\n" \
+       "mb2.TCPinit(127.0.0.1)  # test on local\n" \
+       "Type as Slave and Wait for first connection:\n" \
+       "mb2.TCPslave()\n" \
+       "mb2.TCPslaveAccept()\n" \
+       "\n" \
+       "Wait for incoming message and answer to the Master (synchronous example in loop):\n" \
+       "while True:\n" \
+       "    status = mb2.TCPslaveRead()\n" \
+       "    if not status:\n" \
+       "        mb2.TCPslaveResponse()\n\n"
+
+## Main Class for modbus object
 class uModBus:
     """   Micro Modbus Object for Frame constructor   """
     def __init__(self):
@@ -340,3 +369,13 @@ class uModBus:
             lastBits = lastBits - 8
             lastID = lastID + 8
         return self.crcMB(msg)
+
+def main():
+    print("## Micro Modbus class for workshop experiments.        ##")
+    print("## Try to send data as a master or also as a slave.    ##")
+    print("## For a list of actual methods use -h, --help         ##")
+    print(help)
+    pass
+
+if __name__ == "__main__":
+    main()
