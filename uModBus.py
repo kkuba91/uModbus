@@ -3,15 +3,18 @@
 import socket
 import math
 
-## Description:
+# Description:
 help = "\nExample of use as Master:\n" \
        "mb1 = uModBus()\n" \
        "mb1.UnitID = 21\n" \
        "mb1.TCPinit(127.0.0.1)  # test on local\n" \
        "\n" \
-       "Now build a request - Function 3 - Read 6 Holding Registers starting with address 0:\n" \
-       "reqF03 = mb1.requestBuild(UnitID=22, Function=3, Offset=0, Quantity=6)\n" \
-       "Then use reqest in an action (now TCP is the only way) - send and wait for response:\n" \
+       "Now build a request - Function 3 - Read 6 Holding Registers \n"\
+       "starting with address 0:\n" \
+       "reqF03 = mb1.requestBuild(UnitID=22, Function=3, \n"\
+       "Offset=0, Quantity=6)\n" \
+       "Then use reqest in an action (now TCP is the only way) \n"\
+       "- send and wait for response:\n" \
        "mb1.TCPsend(reqF01)\n" \
        "FromServer_reqF01 = mb1.TCPread()\n" \
        "\n" \
@@ -23,23 +26,23 @@ help = "\nExample of use as Master:\n" \
        "mb2.TCPslave()\n" \
        "mb2.TCPslaveAccept()\n" \
        "\n" \
-       "Wait for incoming message and answer to the Master (synchronous example in loop):\n" \
+       "Wait for incoming message and answer to the Master \n"\
+       "(synchronous example in loop):\n" \
        "while True:\n" \
        "    status = mb2.TCPslaveRead()\n" \
        "    if not status:\n" \
        "        mb2.TCPslaveResponse()\n\n"
 
-## Main Class for modbus object
+# Main Class for modbus object
+
+
 class uModBus:
     """   Micro Modbus Object for Frame constructor   """
     def __init__(self):
         # Some typical data definition for modbus device
         self.type = 1
         self.UnitID = 2
-        self.Inputs = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-        self.Outputs = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]
-        self.Registers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.InputRegisters = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.clearData()
         self.TCP = None
         self.TCP_IP = ""
         self.TCP_msg = []
@@ -49,6 +52,18 @@ class uModBus:
         self.TCP_clientAddress = None
         self.TCP_request = None
         self.TCP_connected = False
+
+    def clearData(self):
+        self.Inputs = [
+            False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False
+            ]
+        self.Outputs = [
+            False, False, False, False, False, False, False, False,
+            False, False, False, False, False, False, False, False
+            ]
+        self.Registers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.InputRegisters = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     def TCPinit(self, ip):
         self.TCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,12 +92,18 @@ class uModBus:
             print(list(dataFromMaster))
             tx1 = dataFromMaster.pop(0)
             tx2 = dataFromMaster.pop(0)
-            self.TCP_tx = int.from_bytes([tx1, tx2], byteorder='big', signed=False)
+            self.TCP_tx = int.from_bytes(
+                [tx1, tx2],
+                byteorder='big',
+                signed=False)
             dataFromMaster.pop(0)
             dataFromMaster.pop(0)
             l1 = dataFromMaster.pop(0)
             l2 = dataFromMaster.pop(0)
-            self.TCP_length = int.from_bytes([l1, l2], byteorder='big', signed=False)
+            self.TCP_length = int.from_bytes(
+                [l1, l2],
+                byteorder='big',
+                signed=False)
             print("Significant packets received:")
             print(list(dataFromMaster))
             self.TCP_request = dataFromMaster
@@ -104,7 +125,8 @@ class uModBus:
             self.TCP_msg.extend(self.TCP_tx.to_bytes(2, byteorder='big'))
             self.TCP_msg.extend([0x00, 0x00])
             self.TCP_msg.extend(self.TCP_length.to_bytes(2, byteorder='big'))
-            self.TCP_msg.extend(dataToServer)
+            crc = self.crcMB(bytearray(dataToServer))
+            self.TCP_msg.extend(crc)
             self.TCP_clientConnected.send(bytearray(self.TCP_msg))
             print("All packets sent:")
             print(self.TCP_msg)
@@ -113,7 +135,6 @@ class uModBus:
             print(e)
             self.TCPslaveAccept()
             return -1
-
 
     def TCPsend(self, data):
         if not self.TCP_connected:
@@ -200,23 +221,50 @@ class uModBus:
             okToRead = True
         if okToRead and IDok:
             if data[1] == 0x01:
-                offset = 1 + int.from_bytes([data[2], data[3]], byteorder='big', signed=False)
-                quantity = int.from_bytes([data[4], data[5]], byteorder='big', signed=False)
+                offset = 1 + int.from_bytes(
+                    [data[2], data[3]],
+                    byteorder='big',
+                    signed=False)
+                quantity = int.from_bytes(
+                    [data[4], data[5]],
+                    byteorder='big',
+                    signed=False)
                 return self.ReadOutput(offset-1, quantity)
             if data[1] == 0x02:
-                offset = 1 + int.from_bytes([data[2], data[3]], byteorder='big', signed=False)
-                quantity = int.from_bytes([data[4], data[5]], byteorder='big', signed=False)
+                offset = 1 + int.from_bytes(
+                    [data[2], data[3]],
+                    byteorder='big',
+                    signed=False)
+                quantity = int.from_bytes(
+                    [data[4], data[5]],
+                    byteorder='big',
+                    signed=False)
                 return self.ReadInput(offset-1, quantity)
             if data[1] == 0x03:
-                offset = 1 + int.from_bytes([data[2], data[3]], byteorder='big', signed=False)
-                quantity = int.from_bytes([data[4], data[5]], byteorder='big', signed=False)
+                offset = 1 + int.from_bytes(
+                    [data[2], data[3]],
+                    byteorder='big',
+                    signed=False)
+                quantity = int.from_bytes(
+                    [data[4], data[5]],
+                    byteorder='big',
+                    signed=False)
                 return self.ReadRegisters(offset-1, quantity)
             if data[1] == 0x04:
-                offset = 1 + int.from_bytes([data[2], data[3]], byteorder='big', signed=False)
-                quantity = int.from_bytes([data[4], data[5]], byteorder='big', signed=False)
+                offset = 1 + int.from_bytes(
+                    [data[2], data[3]],
+                    byteorder='big',
+                    signed=False)
+                quantity = int.from_bytes(
+                    [data[4], data[5]],
+                    byteorder='big',
+                    signed=False)
                 return self.ReadIRegisters(offset-1, quantity)
             if data[1] == 0x05:
-                offset = 1 + int.from_bytes([data[2], data[3]], byteorder='big', signed=False)
+                offset = 1 + int.from_bytes(
+                    [data[2], data[3]],
+                    byteorder='big',
+                    signed=False)
                 if data[4] == 0xFF and data[5] == 0x00:
                     value = True
                 if data[4] == 0x00 and data[5] == 0x00:
@@ -226,22 +274,65 @@ class uModBus:
                 else:
                     return -1
             if data[1] == 0x06:
-                offset = 1 + int.from_bytes([data[2], data[3]], byteorder='big', signed=False)
-                val = int.from_bytes([data[4], data[5]], byteorder='big', signed=False)
+                offset = 1 + int.from_bytes(
+                    [data[2], data[3]],
+                    byteorder='big',
+                    signed=False)
+                val = int.from_bytes(
+                    [data[4], data[5]],
+                    byteorder='big',
+                    signed=False)
                 return self.WriteRegister(offset-1, val)
         else:
             return -1
 
-    # Warning this was the simplest/worst way to send boolean data represented by whole 16bit registers
+    # Read ModbusTCP message without prefix
+    # Parsing data from response message
+    def responseRead(self, data, checkCRC, slaveID, offset):
+        quantity = 0
+        IDok = (data[0] == slaveID)
+        crcOK = True
+        if checkCRC:
+            crcOK = self.check_crc(data)
+        if IDok and crcOK:
+            if data[1] == 0x01:
+                return False
+            if data[1] == 0x02:
+                return False
+            if data[1] == 0x03:
+                quantity = data[2]
+                for addr in range(int(quantity/2)):
+                    self.Registers[addr+offset] = int.from_bytes(
+                        [data[3+(2*addr)], data[4+(2*addr)]],
+                        byteorder='big',
+                        signed=False)
+                return False
+            if data[1] == 0x04:
+                quantity = data[2]
+                for addr in range(int(quantity/2)):
+                    self.InputRegisters[addr+offset] = int.from_bytes(
+                        [data[3+(2*addr)], data[4+(2*addr)]],
+                        byteorder='big',
+                        signed=False)
+                return False
+            if data[1] == 0x05:
+                return False
+            if data[1] == 0x06:
+                return False
+        else:
+            return True
+
+    # Warning this was the simplest/worst way to send boolean data
+    # represented by whole 16bit registers
     # In fact of Modbus standard, was not used in library anymore
     # this includes Input() and Output() functions
-    def Input(self, i): # Wrong way - not used
+    def Input(self, i):  # Wrong way - not used
         if self.Inputs[i]:
             return [0x00, 0xFF]
         else:
             return [0x00, 0x00]
 
-    def Output(self, i): # Wrong way - not used
+    def Output(self, i):  # Wrong way - not used
         if self.Outputs[i]:
             return [0x00, 0xFF]
         else:
@@ -252,11 +343,11 @@ class uModBus:
         data = ''
         q = quantity
         for i in range(0, 8):
-            if self.Outputs[id1+i] and q>0:
+            if self.Outputs[id1+i] and q > 0:
                 data += '1'
             else:
                 data += '0'
-            q=q-1
+            q = q - 1
         return int(data[::-1], 2)
 
     # Right way for Function 2 (list of bits with some offset and range)
@@ -264,11 +355,11 @@ class uModBus:
         data = ''
         q = quantity
         for i in range(0, 8):
-            if self.Inputs[id1+i] and q>0:
+            if self.Inputs[id1+i] and q > 0:
                 data += '1'
             else:
                 data += '0'
-            q=q-1
+            q = q - 1
         return int(data[::-1], 2)
 
     # Return register
@@ -281,9 +372,15 @@ class uModBus:
     # Return Input Register
     def InputRegister(self, i):
         if self.InputRegisters[i] >= 0 and self.InputRegisters[i] <= 65535:
-            return self.InputRegisters[i].to_bytes(2, byteorder='big', signed=False)
+            return self.InputRegisters[i].to_bytes(
+                2,
+                byteorder='big',
+                signed=False)
         else:
-            return self.InputRegisters[i].to_bytes(2, byteorder='big', signed=True)
+            return self.InputRegisters[i].to_bytes(
+                2,
+                byteorder='big',
+                signed=True)
 
     #   Function 06 (06hex) Write Single Holding Register
     def WriteRegister(self, ID, value):
@@ -317,9 +414,8 @@ class uModBus:
         # Input Registers
         # 30001-39999
         msg = [self.UnitID, 0x04]
-        msg.extend(startID.to_bytes(2, byteorder='big'))
-        msg.extend((quantity * 2).to_bytes(2, byteorder='big'))
-        for i in range(startID, startID + quantity):
+        msg.extend([(quantity*2)])
+        for i in range(startID, startID+quantity):
             msg.extend(self.InputRegister(i))
         return self.crcMB(msg)
 
@@ -346,7 +442,9 @@ class uModBus:
         lastBits = quantity
         lastID = startID
         for i in range(0, j-1):
-            msg.extend(self.OutputByte(lastID, lastBits).to_bytes(1, byteorder='big'))
+            msg.extend(self.OutputByte(lastID, lastBits).to_bytes(
+                1,
+                byteorder='big'))
             lastBits = lastBits - 8
             lastID = lastID + 8
         return self.crcMB(msg)
@@ -356,7 +454,7 @@ class uModBus:
         # Discrete Outputs
         # 00001-09999
         msg = [self.UnitID, 0x01]
-        # msg.extend(startID.to_bytes(2, byteorder='big')) - brak id w odpowiedzi
+        # msg.extend(startID.to_bytes(2, byteorder='big')) - no id
         # msg.extend((quantity * 2).to_bytes(1, byteorder='big'))
         # for i in range(startID, startID + quantity):
         #    msg.extend(self.Output(i))
@@ -365,10 +463,13 @@ class uModBus:
         lastBits = quantity
         lastID = startID
         for i in range(0, j):
-            msg.extend(self.OutputByte(lastID, lastBits).to_bytes(1, byteorder='big'))
+            msg.extend(self.OutputByte(lastID, lastBits).to_bytes(
+                1,
+                byteorder='big'))
             lastBits = lastBits - 8
             lastID = lastID + 8
         return self.crcMB(msg)
+
 
 def main():
     print("## Micro Modbus class for workshop experiments.        ##")
@@ -376,6 +477,7 @@ def main():
     print("## For a list of actual methods use -h, --help         ##")
     print(help)
     pass
+
 
 if __name__ == "__main__":
     main()
