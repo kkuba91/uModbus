@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 from uModBus import uModBus
-# import pytest
-# import unittest
+# test passing on pytest framework (read Registers)
 
 # Modbus objects initialization
 # Slave (TCP server):
