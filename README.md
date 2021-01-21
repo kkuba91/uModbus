@@ -2,11 +2,11 @@
 [![Language: Python](https://img.shields.io/badge/python-%3E%3D3.7-blue)](https://github.com/kkuba91/uModbus)
 
 # uModbus
-#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) but in development.
+#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) but in development (Registers should work).
 
 ##### The standard implemented with model from: https://www.simplymodbus.ca/  (website and content Copyright © 2020 Simply Modbus).
 
-##### Tested in about 30% with Modbus Slave from: https://www.modbustools.com/  (tool and website content Copyright © 2020 Witte Software).  
+##### Tested in about 30% by pytest and Modbus Slave from: https://www.modbustools.com/  (tool and website content Copyright © 2020 Witte Software).  
 
 Modbus TCP standard is relatively easy. In some commisionings still in use by many measurement devices (but not only - control devices uses it too).
 That is why it is good to know rules. 
@@ -47,11 +47,12 @@ reqF03 = mb1.requestBuild(UnitID=22, Function=3, Offset=0, Quantity=6)
 
 Then use reqest in an action (now TCP is the only way) - send and wait for response:
 ```python
-mb1.TCPsend(reqF01)
-FromServer_reqF01 = mb1.TCPread()
+mb1.TCPsend(reqF03)
+FromServer_reqF03 = mb1.TCPread()
+mb1.responseRead(FromServer_reqF03, checkCRC=True, slaveID=22, offset=0)
 ```
 
-At the end Master needs to parse data into further program resources.
+At the end Master needs to parse data into further program resources (fixed for Registers).
 In reality slaves uses predefined addressed registers/inputs/outputs, so further answer parsers will come here (soon).
 
 
