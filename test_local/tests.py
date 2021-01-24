@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 from uModBus import uModBus
-# test passing on pytest framework (read Registers)
+# import pytest
+# import unittest
 
 # Modbus objects initialization
 # Slave (TCP server):
@@ -128,4 +129,52 @@ def test_read_InputReg_2():
         mb1.InputRegisters[3] == mb2.InputRegisters[3] and
         0 == mb2.InputRegisters[6] and
         0 == mb2.InputRegisters[7]
+    )
+
+
+def test_write_HoldReg_1():
+    mb2.clearData()
+    # mb2 - master  /  mb1 - slave
+    mb2.Registers[2] = 22
+    mb2.Registers[3] = 333
+    mb2.Registers[4] = 4444
+    # Write function has value papameter instead of quantity
+    req = mb2.requestBuild(
+        UnitID=21,
+        Function=6,
+        Offset=2,
+        Val=mb2.Registers[2])
+    mb2.TCPsend(req)
+    mb1.TCPslaveAccept()
+    mb1.TCPslaveRead()
+    mb1.TCPslaveResponse()
+    FromServer_req = mb2.TCPread()
+    print("Response received...")
+    print(FromServer_req)
+    assert (
+        mb1.Registers[2] == mb2.Registers[2]
+    )
+
+
+def test_write_HoldReg_2():
+    mb2.clearData()
+    # mb2 - master  /  mb1 - slave
+    mb2.Registers[2] = 22
+    mb2.Registers[3] = 333
+    mb2.Registers[4] = 4444
+    # Write function has value papameter instead of quantity
+    req = mb2.requestBuild(
+        UnitID=21,
+        Function=6,
+        Offset=3,
+        Val=mb2.Registers[3])
+    mb2.TCPsend(req)
+    mb1.TCPslaveAccept()
+    mb1.TCPslaveRead()
+    mb1.TCPslaveResponse()
+    FromServer_req = mb2.TCPread()
+    print("Response received...")
+    print(FromServer_req)
+    assert (
+        mb1.Registers[3] == mb2.Registers[3]
     )
