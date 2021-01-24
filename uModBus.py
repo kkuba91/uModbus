@@ -199,12 +199,17 @@ class uModBus:
         data.extend(bb)
         return data
 
-    def requestBuild(self, UnitID, Function, Offset, Quantity):
+    def requestBuild(self, UnitID=0, Function=0,
+                     Offset=0, Quantity=None, Val=None):
         msg = [UnitID, Function]
         tempBytes = Offset.to_bytes(2, byteorder='big', signed=False)
         msg.extend([tempBytes[0], tempBytes[1]])
-        tempBytes = Quantity.to_bytes(2, byteorder='big', signed=False)
-        msg.extend([tempBytes[0], tempBytes[1]])
+        if Function == 5 or Function == 6:
+            tempBytes = Val.to_bytes(2, byteorder='big', signed=False)
+            msg.extend([tempBytes[0], tempBytes[1]])
+        else:
+            tempBytes = Quantity.to_bytes(2, byteorder='big', signed=False)
+            msg.extend([tempBytes[0], tempBytes[1]])
         return bytearray(self.crcMB(msg))
 
     # Read ModbusTCP message without prefix
