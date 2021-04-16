@@ -73,7 +73,7 @@ The begining quite the same as in previous example:
 mb2 = uModBus()
 mb2.TCP_Init(ip="127.0.0.1", id=22, master=False)  # test on local
 ```
-Script above uses socker listen() -> accept() functions, so they are called syncronous.
+Script above uses socket listen() -> accept() functions, so they are called synchronous.
 
 Data inside modbus object should change independent (by asynchronous functions) in best way. But here for testing purpose everything works synchronously.
 
