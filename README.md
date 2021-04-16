@@ -2,7 +2,7 @@
 [![Language: Python](https://img.shields.io/badge/python-%3E%3D3.7-blue)](https://github.com/kkuba91/uModbus)
 
 # uModbus
-#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) but in development (Registers should work).
+#### Micro Modbus class for workshop experiments - free, unfortunately bugged yet :) but in development (F15 and F16 not implmented).
 
 ##### The standard implemented with model from: https://www.simplymodbus.ca/  (website and content Copyright © 2020 Simply Modbus).
 
